@@ -149,3 +149,18 @@ LICENSE
 已完成前端生产构建和 Capacitor Android 资源同步；Android 配置按下列官方文档及项目依赖核对。**尚未完成 APK 编译和真机验证**，最终结果以你本机的 `BUILD SUCCESSFUL` 和安装测试为准。
 
 参考：[Capacitor 7 环境与版本要求](https://capacitorjs.com/docs/v7/updating/7-0)、[AGP 8.7 兼容性](https://developer.android.com/build/releases/agp-8-7-0-release-notes)、[Android 命令行构建 APK](https://developer.android.com/build/building-cmdline)。
+
+## 界面与数据源扩展
+
+首页支持按方向收藏、最近查看（最多 12 个方向）和起终点搜索。收藏与历史仅保存在本机，清除应用数据后会丢失；不会持久保存实时车辆数量。当前仅开放大连昌赫客运，大连主城区与南京显示为暂未接入。
+
+源码分工：
+- src/RouteLibrary.jsx：线路列表、收藏、最近查看。
+- src/RegionPicker.jsx：城市及运营范围入口。
+- src/providers.js：城市、范围、数据源标识与能力配置。
+- src/useBus.js：昌赫 WebSocket 协议与连接生命周期。
+- src/main.jsx：线路详情、站点与完整车辆信息。
+
+新增数据源时，先验证一条线路的两个方向，再实现协议适配、线路及车辆字段转换，以及切换来源时的连接清理。当前详情仍使用昌赫字段，本次拆分不是完整的通用多数据源实现。不能只将地区配置的 available 改为 true：选择器还需绑定新数据源状态及请求逻辑。
+
+收藏、缓存标识包含数据源、城市、线路、方向，避免编号冲突。缺失的车辆 ID、坐标、预计到站时间保持缺失；定位时间和接收时间分开处理，上地图前确认坐标系。保密密钥或上游签名应由自己的后端处理。
