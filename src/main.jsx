@@ -22,7 +22,7 @@ function App(){
  const opposite=route&&routes.find(r=>r.rid===route.rid&&r.upDown!==route.upDown);
  return <div className="app">
  <aside className="sidebar"><a className="brand" href="#" onClick={e=>{e.preventDefault();bus.back();}}><span className="brand-icon"><BusFront size={23}/></span><span>沿途<small>BUSTRACK</small></span></a><div className="side-section">出行</div><button className="nav active" onClick={bus.back}><Navigation size={18}/>实时公交<ChevronRight size={15}/></button><div className="side-note">● 大连 · 昌赫客运<p>每一程，心中有数。</p></div></aside>
- <main><header><RegionPicker/><div className={'connection '+bus.connection}><i/>{bus.connection==='connected'?'已连接':bus.connection==='connecting'?'连接中':'已断开'}</div></header>
+ <main><header><RegionPicker/><button className={'connection connection-button '+bus.connection} onClick={bus.retry} disabled={bus.connection==='connecting'} aria-label={bus.connection==='connecting'?'正在连接':bus.connection==='connected'?'已连接，点击重新连接':'已断开，点击重新连接'} title="点击重新连接"><i/>{bus.connection==='connected'?'已连接':bus.connection==='connecting'?'连接中':'已断开 · 重连'}{bus.connection!=='connected'&&<RefreshCw size={13} className={bus.connection==='connecting'?'spin':''}/>}</button></header>
  {bus.error&&<div className="notice"><WifiOff size={17}/>{bus.error}</div>}
  {!route?<><RouteLibrary routes={routes} saved={saved} select={select} connection={bus.connection} view={libraryView} setView={setLibraryView} query={query} setQuery={setQuery}/></>:<>
 
